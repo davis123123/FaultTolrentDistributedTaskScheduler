@@ -1,0 +1,42 @@
+version: "3"
+services:
+        web:
+            image: 127.0.0.1:5000/web:latest
+            build: .
+            command: python -u app.py
+            ports:
+                - "8000:8000"
+            volumes:
+                - .:/TaskScheduler
+            links:
+                - db
+
+        db:
+            ports:
+                - "27017:27017"
+            image: mongo
+        
+
+        master:
+                image: 127.0.0.1:5000/master:latest
+                build: ./master
+                container_name: master
+                command: python -u master.py
+                ports:
+                        - "8001:8001"
+                volumes:
+                        - .:/TaskScheduler
+                expose:
+                        - "8001"
+
+                
+        slave:
+                image: 127.0.0.1:5000/slave:latest
+                build: ./slave
+                container_name: slave
+                command: python -u slave.py
+     
+                ports:
+                        - "8002:8002"
+
+
